@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, models, model } from "mongoose";
 
 export interface IUser {
   name: string;
@@ -46,7 +46,6 @@ const UserSchema = new Schema<IUser>(
     resume: {
       url: {
         type: String, // cloudinary
-        required: true,
       },
       fileName: {
         type: String,
@@ -63,4 +62,6 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-export default model<IUser>("User", UserSchema);
+const User = models.User || model<IUser>("User", UserSchema);
+
+export default User;
