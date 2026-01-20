@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "@/models/User";
 import { connectDB } from "@/lib/db";
 import { sendEmail } from "@/lib/verificationEmail";
+import { encryptPassword } from "@/lib/encryption";
 import { NextRequest, NextResponse } from "next/server";
 
 export const register = async (req: NextRequest) => {
@@ -13,7 +14,7 @@ export const register = async (req: NextRequest) => {
     if (!name || !email || !password || !emailAppPassword) {
       return NextResponse.json(
         { message: "Something is missing", success: false },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -24,11 +25,11 @@ export const register = async (req: NextRequest) => {
           message: "User already exist with this email",
           success: false,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const hashedemailAppPassword = await bcrypt.hash(emailAppPassword, 10);
+    const encryptedEmailAppPassword = encryptPassword(emailAppPassword);
 
     const JWT_SECRET = process.env.JWT_SECRET as string;
     if (!JWT_SECRET) {
@@ -43,7 +44,7 @@ export const register = async (req: NextRequest) => {
       name,
       email,
       password: hashedPassword,
-      emailAppPassword: hashedemailAppPassword,
+      emailAppPassword: encryptedEmailAppPassword,
       isVerified: false,
     });
 
@@ -64,7 +65,7 @@ export const register = async (req: NextRequest) => {
         message: "Account created. Please verify your email",
         success: true,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Registration error:", error);
@@ -73,7 +74,7 @@ export const register = async (req: NextRequest) => {
         message: "Error creating account",
         success: false,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -86,21 +87,21 @@ export const login = async (req: NextRequest) => {
     if (!email || !password) {
       return NextResponse.json(
         { message: "", success: false },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return NextResponse.json(
         { message: "Invalid email or password", success: false },
-        { status: 401 }
+        { status: 401 },
       );
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
         { message: "Invalid email or password", success: false },
-        { status: 401 }
+        { status: 401 },
       );
     }
     if (!user.isVerified) {
@@ -110,7 +111,7 @@ export const login = async (req: NextRequest) => {
           success: false,
           isVerificationError: true,
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
     const JWT_SECRET = process.env.JWT_SECRET as string;
@@ -120,17 +121,17 @@ export const login = async (req: NextRequest) => {
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
     return NextResponse.json(
-      { message: "Login successful", success: true, token },
-      { status: 200 }
+      { message: "Login successful", success: true, token, user },
+      { status: 200 },
     );
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
       { message: "Server Error logging in", success: false },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };
@@ -142,7 +143,7 @@ export const verifyEmail = async (token: string) => {
     if (!token) {
       return NextResponse.json(
         { message: "Verification token missing" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -171,9 +172,10 @@ export const verifyEmail = async (token: string) => {
       success: true,
     });
   } catch (error) {
+    console.error("Email verification error:", error);
     return NextResponse.json(
       { message: "Invalid or expired token" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 };

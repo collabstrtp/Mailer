@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getToken } from "@/utils/auth";
 
 export default function SendEmailPage() {
   const [to, setTo] = useState("");
@@ -10,6 +11,8 @@ export default function SendEmailPage() {
   const [coverLetter, setCoverLetter] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+
 
   const sendEmail = async () => {
     if (!to || !subject || !body) {
@@ -29,10 +32,31 @@ export default function SendEmailPage() {
       if (resume) formData.append("resume", resume);
       if (coverLetter) formData.append("coverLetter", coverLetter);
 
+      const token = getToken();
+      console.log("Sendmail: Retrieved token:", token ? "present" : "missing");
+      if (token) {
+        console.log("Token length:", token.length);
+        console.log("Token preview:", token.substring(0, 50) + "...");
+      }
+
+      const headers: any = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      console.log("Sending request with headers:", { Authorization: headers.Authorization ? "present" : "missing" });
+
       const res = await fetch("/api/mail", {
         method: "POST",
         body: formData,
+        headers,
       });
+      console.log("Sendmail: Response status:", res.status);
+
+      if (res.status === 401) {
+        const errorData = await res.json();
+        console.log("401 Error details:", errorData);
+      }
 
       const data = await res.json();
       if (data.success) {
@@ -105,6 +129,7 @@ export default function SendEmailPage() {
         >
           {loading ? "Sending..." : "Send Email"}
         </button>
+
 
         {message && (
           <p className="text-center text-sm text-green-400 mt-2">{message}</p>

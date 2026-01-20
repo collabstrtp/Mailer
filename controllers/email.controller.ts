@@ -1,14 +1,21 @@
-import { transporter } from "@/lib/mailer";
+import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
 
-export async function sendMailController(formData: FormData) {
+export async function sendMailController(
+  formData: FormData,
+  userCredentials: { userEmail: string; emailAppPassword: string },
+) {
   const toRaw = formData.get("to") as string;
   const subject = formData.get("subject") as string;
   const body = formData.get("body") as string;
 
   if (!toRaw || !subject || !body) {
     throw new Error("Missing required fields");
+  }
+
+  if (!userCredentials.userEmail || !userCredentials.emailAppPassword) {
+    throw new Error("User credentials not available");
   }
 
   // split multiple emails
@@ -44,12 +51,23 @@ export async function sendMailController(formData: FormData) {
     attachments.push({ filename: coverLetter.name, path: coverPath });
   }
 
-  await transporter.sendMail({
-    from: `<${process.env.SMTP_EMAIL}>`,
+  // Create transporter using user's email credentials
+  const userTransporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: userCredentials.userEmail,
+      pass: userCredentials.emailAppPassword,
+    },
+  });
+
+  await userTransporter.sendMail({
+    from: `<${userCredentials.userEmail}>`,
     to: recipients,
     subject,
     text: body,
-    attachments, // empty array is totally valid
+    attachments,
   });
 
   return { success: true, sentTo: recipients.length };
