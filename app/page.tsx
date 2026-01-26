@@ -1,10 +1,11 @@
 "use client";
 
+import { Mail, Send, FileText, Sparkles, Zap, Shield, Clock } from 'lucide-react';
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   useEffect(() => {
-    // Intersection Observer for scroll animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -22,467 +23,17 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, []);
+  const router = useRouter();
 
   return (
     <>
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         
-        :root {
-          --primary: #1a1a2e;
-          --accent: #0f4c75;
-          --highlight: #3282b8;
-          --light: #f8f9fa;
-          --warning: #ff6b6b;
-          --success: #51cf66;
-        }
-
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
         body {
           font-family: 'Inter', sans-serif;
-          color: var(--primary);
-          background: var(--light);
-          overflow-x: hidden;
         }
 
-        /* Hero Section */
-        .hero {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #0f4c75 0%, #1a1a2e 100%);
-          position: relative;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 2rem;
-        }
-
-        .hero::before {
-          content: '';
-          position: absolute;
-          width: 150%;
-          height: 150%;
-          background: 
-            radial-gradient(circle at 20% 50%, rgba(50, 130, 184, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 50%, rgba(255, 107, 107, 0.2) 0%, transparent 50%);
-          animation: pulse 8s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-          0%, 100% { transform: scale(1) rotate(0deg); }
-          50% { transform: scale(1.1) rotate(5deg); }
-        }
-
-        .hero-content {
-          max-width: 1200px;
-          position: relative;
-          z-index: 1;
-          text-align: center;
-          animation: fadeInUp 1s ease-out;
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .hero h1 {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(2.5rem, 8vw, 5rem);
-          font-weight: 900;
-          color: white;
-          margin-bottom: 1.5rem;
-          line-height: 1.1;
-          animation: fadeInUp 1s ease-out 0.2s both;
-        }
-
-        .hero h1 span {
-          background: linear-gradient(120deg, #3282b8, #51cf66);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .hero p {
-          font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-          color: rgba(255, 255, 255, 0.9);
-          margin-bottom: 3rem;
-          max-width: 700px;
-          margin-left: auto;
-          margin-right: auto;
-          line-height: 1.6;
-          animation: fadeInUp 1s ease-out 0.4s both;
-        }
-
-        .cta-buttons {
-          display: flex;
-          gap: 1.5rem;
-          justify-content: center;
-          flex-wrap: wrap;
-          animation: fadeInUp 1s ease-out 0.6s both;
-        }
-
-        .btn {
-          padding: 1rem 2.5rem;
-          font-size: 1.1rem;
-          font-weight: 600;
-          border: none;
-          border-radius: 50px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-decoration: none;
-          display: inline-block;
-        }
-
-        .btn-primary {
-          background: linear-gradient(135deg, #3282b8, #51cf66);
-          color: white;
-          box-shadow: 0 10px 30px rgba(50, 130, 184, 0.4);
-        }
-
-        .btn-primary:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 15px 40px rgba(50, 130, 184, 0.6);
-        }
-
-        .btn-secondary {
-          background: rgba(255, 255, 255, 0.1);
-          color: white;
-          backdrop-filter: blur(10px);
-          border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-secondary:hover {
-          background: rgba(255, 255, 255, 0.2);
-          transform: translateY(-3px);
-        }
-
-        /* Stats Bar */
-        .stats {
-          background: white;
-          padding: 3rem 2rem;
-          display: flex;
-          justify-content: center;
-          gap: 4rem;
-          flex-wrap: wrap;
-          box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
-        }
-
-        .stat-item {
-          text-align: center;
-          animation: fadeInUp 1s ease-out both;
-        }
-
-        .stat-item:nth-child(1) { animation-delay: 0.8s; }
-        .stat-item:nth-child(2) { animation-delay: 1s; }
-        .stat-item:nth-child(3) { animation-delay: 1.2s; }
-
-        .stat-number {
-          font-family: 'Playfair Display', serif;
-          font-size: 3rem;
-          font-weight: 900;
-          background: linear-gradient(135deg, var(--accent), var(--highlight));
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-          color: #666;
-          font-size: 1rem;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          font-weight: 500;
-        }
-
-        /* Features Section */
-        .features {
-          padding: 6rem 2rem;
-          max-width: 1400px;
-          margin: 0 auto;
-        }
-
-        .section-title {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(2rem, 5vw, 3.5rem);
-          text-align: center;
-          margin-bottom: 1rem;
-          font-weight: 900;
-        }
-
-        .section-subtitle {
-          text-align: center;
-          color: #666;
-          font-size: 1.2rem;
-          margin-bottom: 4rem;
-          max-width: 600px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .features-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: 2.5rem;
-          margin-top: 3rem;
-        }
-
-        .feature-card {
-          background: white;
-          padding: 2.5rem;
-          border-radius: 20px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          position: relative;
-          overflow: hidden;
-        }
-
-        .feature-card::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 4px;
-          background: linear-gradient(90deg, var(--accent), var(--highlight));
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.4s ease;
-        }
-
-        .feature-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-card:hover::before {
-          transform: scaleX(1);
-        }
-
-        .feature-icon {
-          width: 70px;
-          height: 70px;
-          background: linear-gradient(135deg, var(--accent), var(--highlight));
-          border-radius: 18px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 2rem;
-          margin-bottom: 1.5rem;
-          box-shadow: 0 10px 30px rgba(50, 130, 184, 0.3);
-        }
-
-        .feature-card h3 {
-          font-size: 1.5rem;
-          margin-bottom: 1rem;
-          font-weight: 700;
-        }
-
-        .feature-card p {
-          color: #666;
-          line-height: 1.7;
-          font-size: 1rem;
-        }
-
-        /* How It Works */
-        .how-it-works {
-          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-          padding: 6rem 2rem;
-        }
-
-        .steps {
-          max-width: 1000px;
-          margin: 4rem auto 0;
-          display: flex;
-          flex-direction: column;
-          gap: 3rem;
-        }
-
-        .step {
-          display: flex;
-          gap: 2rem;
-          align-items: flex-start;
-          animation: fadeInLeft 0.8s ease-out both;
-        }
-
-        .step:nth-child(even) {
-          flex-direction: row-reverse;
-          animation: fadeInRight 0.8s ease-out both;
-        }
-
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes fadeInRight {
-          from {
-            opacity: 0;
-            transform: translateX(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .step-number {
-          min-width: 80px;
-          height: 80px;
-          background: linear-gradient(135deg, var(--accent), var(--highlight));
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-family: 'Playfair Display', serif;
-          font-size: 2rem;
-          font-weight: 900;
-          box-shadow: 0 10px 30px rgba(50, 130, 184, 0.4);
-          flex-shrink: 0;
-        }
-
-        .step-content {
-          flex: 1;
-          background: white;
-          padding: 2rem;
-          border-radius: 15px;
-          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .step-content h3 {
-          font-size: 1.5rem;
-          margin-bottom: 0.8rem;
-          font-weight: 700;
-        }
-
-        .step-content p {
-          color: #666;
-          line-height: 1.7;
-        }
-
-        /* CTA Section */
-        .final-cta {
-          padding: 6rem 2rem;
-          background: linear-gradient(135deg, #1a1a2e 0%, #0f4c75 100%);
-          text-align: center;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .final-cta::before {
-          content: '';
-          position: absolute;
-          width: 300px;
-          height: 300px;
-          background: radial-gradient(circle, rgba(50, 130, 184, 0.4) 0%, transparent 70%);
-          top: -100px;
-          right: -100px;
-          animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-
-        .final-cta h2 {
-          font-family: 'Playfair Display', serif;
-          font-size: clamp(2rem, 5vw, 3.5rem);
-          color: white;
-          margin-bottom: 1.5rem;
-          font-weight: 900;
-          position: relative;
-          z-index: 1;
-        }
-
-        .final-cta p {
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 1.3rem;
-          margin-bottom: 2.5rem;
-          max-width: 700px;
-          margin-left: auto;
-          margin-right: auto;
-          position: relative;
-          z-index: 1;
-        }
-
-        /* Footer */
-        footer {
-          background: var(--primary);
-          color: white;
-          padding: 3rem 2rem;
-          text-align: center;
-        }
-
-        footer p {
-          opacity: 0.8;
-          margin-bottom: 1rem;
-        }
-
-        .footer-links {
-          display: flex;
-          gap: 2rem;
-          justify-content: center;
-          flex-wrap: wrap;
-          margin-top: 1.5rem;
-        }
-
-        .footer-links a {
-          color: white;
-          text-decoration: none;
-          opacity: 0.8;
-          transition: opacity 0.3s ease;
-        }
-
-        .footer-links a:hover {
-          opacity: 1;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-          .hero {
-            padding: 2rem 1.5rem;
-          }
-
-          .stats {
-            gap: 2rem;
-          }
-
-          .features-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .step {
-            flex-direction: column !important;
-          }
-
-          .step-number {
-            min-width: 60px;
-            height: 60px;
-            font-size: 1.5rem;
-          }
-        }
-
-        /* Scroll Animation Observer */
         .observe {
           opacity: 0;
           transform: translateY(30px);
@@ -494,194 +45,336 @@ export default function Home() {
           transform: translateY(0);
         }
 
-        /* Smooth scrolling */
+        .gradient-text {
+          background: linear-gradient(120deg, #3b82f6, #6366f1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .gradient-stat {
+          background: linear-gradient(135deg, #2563eb, #4f46e5);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
         html {
           scroll-behavior: smooth;
         }
       `}</style>
 
-      <div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        {/* Navbar */}
+        <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <Mail className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Mailer
+                </span>
+              </div>
+
+              <div className="hidden md:flex items-center gap-8">
+                <a href="#features" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                  Features
+                </a>
+                <a href="#how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                  How It Works
+                </a>
+                <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                  Pricing
+                </a>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <button onClick={() => router.push("/login")} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium">
+                  Login
+                </button>
+                <button
+                  onClick={() => router.push("/register")} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium">
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
         {/* Hero Section */}
-        <section className="hero">
-          <div className="hero-content">
-            <h1>
-              Reach <span>Every Recruiter.</span>
-              <br />
-              Scale <span>Every Opportunity.</span>
-            </h1>
-            <p>
-              Send personalized cold emails to hundreds of recruiters at once.
-              Save time, stay professional, and land your dream job faster.
-            </p>
-            <div className="cta-buttons">
-              <a href="/register" className="btn btn-primary">
-                Start Free Trial
-              </a>
-              <a href="#how-it-works" className="btn btn-secondary">
-                See How It Works
-              </a>
+        <section className="pt-32 pb-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                  AI-Powered Email Automation
+                </div>
+                <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+                  Send Thousands of{' '}
+                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    Personalized Emails
+                  </span>{' '}
+                  in One Click
+                </h1>
+                <p className="text-xl text-gray-600 leading-relaxed">
+                  Transform your cold email outreach with AI-generated content, bulk sending capabilities, and automatic attachment management. Perfect for job applications, marketing campaigns, and professional networking.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <button
+                    onClick={() => router.push("/register")}
+                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-xl transition-all font-semibold text-lg flex items-center justify-center gap-2">
+                    Get Started Free
+                    <Send className="w-5 h-5" />
+                  </button>
+                  <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-all font-semibold text-lg">
+                    Watch Demo
+                  </button>
+                </div>
+                <div className="flex items-center gap-8 pt-4">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-green-600" />
+                    <span className="text-sm text-gray-600">Secure & Encrypted</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-yellow-600" />
+                    <span className="text-sm text-gray-600">Lightning Fast</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 pb-4 border-b">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                        <Sparkles className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-gray-900">AI Email Assistant</p>
+                        <p className="text-sm text-gray-500">Crafting your message...</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-sm text-gray-500 mb-2">Recipients</p>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">john@company.com</span>
+                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">jane@startup.io</span>
+                          <span className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">+247 more</span>
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-sm text-gray-500 mb-2">Attachments</p>
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-gray-600" />
+                          <span className="text-sm text-gray-700">Resume.pdf, Cover_Letter.pdf</span>
+                        </div>
+                      </div>
+                      <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2">
+                        <Send className="w-5 h-5" />
+                        Send to All Recipients
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gradient-to-br from-blue-400 to-indigo-400 rounded-full blur-3xl opacity-30"></div>
+                <div className="absolute -top-6 -left-6 w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full blur-3xl opacity-30"></div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Stats Bar */}
-        <section className="stats">
-          <div className="stat-item">
-            <div className="stat-number">10K+</div>
-            <div className="stat-label">Emails Sent Daily</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">95%</div>
-            <div className="stat-label">Delivery Rate</div>
-          </div>
-          <div className="stat-item">
-            <div className="stat-number">3x</div>
-            <div className="stat-label">Faster Outreach</div>
+        <section className="bg-white py-12 px-8 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+          <div className="max-w-6xl mx-auto flex flex-wrap justify-center gap-16 text-center">
+            <div>
+              <div className="text-5xl md:text-6xl font-extrabold gradient-stat mb-2">
+                10K+
+              </div>
+              <div className="text-gray-600 text-base uppercase tracking-wider font-medium">
+                Emails Sent Daily
+              </div>
+            </div>
+            <div>
+              <div className="text-5xl md:text-6xl font-extrabold gradient-stat mb-2">
+                95%
+              </div>
+              <div className="text-gray-600 text-base uppercase tracking-wider font-medium">
+                Delivery Rate
+              </div>
+            </div>
+            <div>
+              <div className="text-5xl md:text-6xl font-extrabold gradient-stat mb-2">
+                3x
+              </div>
+              <div className="text-gray-600 text-base uppercase tracking-wider font-medium">
+                Faster Outreach
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section className="features">
-          <h2 className="section-title">
+        <section id="features" className="py-24 px-8 max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl text-center font-extrabold mb-4 text-gray-900">
             Powerful Features for Modern Job Seekers
           </h2>
-          <p className="section-subtitle">
-            Everything you need to run professional, large-scale email campaigns
-            without the hassle
+          <p className="text-center text-gray-600 text-xl max-w-2xl mx-auto mb-16">
+            Everything you need to run professional, large-scale email campaigns without the hassle
           </p>
 
-          <div className="features-grid">
-            <div className="feature-card observe">
-              <div className="feature-icon">✉️</div>
-              <h3>Smart Personalization</h3>
-              <p>
-                Customize each email with recruiter names, companies, roles, and
-                more. Our AI ensures every message feels personal and genuine.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-12">
+            {[
+              {
+                icon: <Sparkles className="text-white" />,
+                title: "AI-Powered Email Automation",
+                desc: "Generate personalized email content based on job descriptions and recipient profiles. Our AI crafts compelling messages that get responses."
+              },
+              {
+                icon: "✉️",
+                title: "Bulk Email Sending",
+                desc: "Send to hundreds or thousands of recipients simultaneously. Upload email lists and let our system handle the distribution efficiently."
+              },
+              {
+                icon: <FileText className="text-white" />,
+                title: "Smart Attachments",
+                desc: "Automatically attach resumes, cover letters, and documents to your emails. Manage multiple attachment sets for different campaigns."
+              },
+              {
+                icon: "🔒",
+                title: "Secure Authentication",
+                desc: "Your credentials are hashed and encrypted. Use Gmail app passwords for secure access without exposing your main password."
+              },
+              {
+                icon: <Clock className="text-white" />,
+                title: "Time-Saving Automation",
+                desc: "What used to take hours now takes minutes. Automate your entire email workflow and focus on what matters most."
+              },
+              {
+                icon: "⚡",
+                title: "One-Click Campaigns",
+                desc: "Launch entire email campaigns with a single click. Perfect for job applications, cold outreach, and marketing campaigns."
+              }
+            ].map((feature, i) => (
+              <div
+                key={i}
+                className="observe bg-white rounded-3xl p-10 shadow-lg hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 relative overflow-hidden group"
+              >
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left"></div>
 
-            <div className="feature-card observe">
-              <div className="feature-icon">📊</div>
-              <h3>Bulk Upload & Manage</h3>
-              <p>
-                Import hundreds of contacts via CSV or Excel. Organize, segment,
-                and manage your recruiter database effortlessly.
-              </p>
-            </div>
+                <div className="w-[70px] h-[70px] bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-lg shadow-blue-500/30">
+                  {feature.icon}
+                </div>
 
-            <div className="feature-card observe">
-              <div className="feature-icon">⚡</div>
-              <h3>Automated Scheduling</h3>
-              <p>
-                Set it and forget it. Schedule campaigns, control send rates, and
-                avoid spam filters with intelligent throttling.
-              </p>
-            </div>
-
-            <div className="feature-card observe">
-              <div className="feature-icon">📈</div>
-              <h3>Real-Time Analytics</h3>
-              <p>
-                Track opens, clicks, and responses. Know exactly which recruiters
-                are engaging with your outreach.
-              </p>
-            </div>
-
-            <div className="feature-card observe">
-              <div className="feature-icon">🔒</div>
-              <h3>Gmail Integration</h3>
-              <p>
-                Seamlessly connect with Gmail API. Secure, reliable, and respects
-                sending limits to protect your account.
-              </p>
-            </div>
-
-            <div className="feature-card observe">
-              <div className="feature-icon">✅</div>
-              <h3>Compliance Built-In</h3>
-              <p>
-                Automatic unsubscribe links, GDPR compliance, and CAN-SPAM
-                adherence. Stay professional and legal.
-              </p>
-            </div>
+                <h3 className="text-2xl font-bold mb-4 text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* How It Works */}
-        <section className="how-it-works" id="how-it-works">
-          <h2 className="section-title">How It Works</h2>
-          <p className="section-subtitle">Get started in minutes, not hours</p>
+        <section id="how-it-works" className="bg-gradient-to-br from-blue-50 to-indigo-50 py-24 px-8">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl text-center font-extrabold mb-4 text-gray-900">
+              How It Works
+            </h2>
+            <p className="text-center text-gray-600 text-xl mb-16">
+              Get started in minutes, not hours
+            </p>
 
-          <div className="steps">
-            <div className="step">
-              <div className="step-number">1</div>
-              <div className="step-content">
-                <h3>Upload Your Contacts</h3>
-                <p>
-                  Import recruiter emails from CSV, Excel, or manually add them.
-                  Include details like name, company, and role for better
-                  personalization.
-                </p>
-              </div>
-            </div>
+            <div className="space-y-12">
+              {[
+                {
+                  num: "1",
+                  title: "Connect Your Email",
+                  desc: "Login with your email and secure 16-digit app password. Your credentials are encrypted and stored safely."
+                },
+                {
+                  num: "2",
+                  title: "Craft Your Message",
+                  desc: "Upload recipient lists, add your subject and content. Use our AI to generate personalized messages based on job descriptions."
+                },
+                {
+                  num: "3",
+                  title: "Send with Attachments",
+                  desc: "Click send and reach hundreds of recipients instantly. Attach resumes and cover letters automatically."
+                },
+                {
+                  num: "4",
+                  title: "Track & Follow Up",
+                  desc: "Monitor engagement in real-time. See whom you have sent your emails and track your interested recruiters directly from your dashboard."
+                }
+              ].map((step, i) => (
+                <div
+                  key={i}
+                  className={`flex flex-col md:flex-row gap-8 items-start ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}
+                >
+                  <div className="flex-shrink-0">
+                    <div className="min-w-[80px] h-20 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center text-3xl font-extrabold shadow-lg shadow-blue-500/30">
+                      {step.num}
+                    </div>
+                  </div>
 
-            <div className="step">
-              <div className="step-number">2</div>
-              <div className="step-content">
-                <h3>Craft Your Message</h3>
-                <p>
-                  Create email templates with dynamic variables. Preview how each
-                  email will look before sending to ensure quality.
-                </p>
-              </div>
-            </div>
-
-            <div className="step">
-              <div className="step-number">3</div>
-              <div className="step-content">
-                <h3>Schedule & Send</h3>
-                <p>
-                  Set your sending schedule, control the pace, and let ReachScale
-                  handle the rest. We'll ensure optimal deliverability.
-                </p>
-              </div>
-            </div>
-
-            <div className="step">
-              <div className="step-number">4</div>
-              <div className="step-content">
-                <h3>Track & Follow Up</h3>
-                <p>
-                  Monitor engagement in real-time. See who opened your emails and
-                  respond to interested recruiters directly from your dashboard.
-                </p>
-              </div>
+                  <div className="flex-1 bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <h3 className="text-2xl font-bold mb-3 text-gray-900">
+                      {step.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {step.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* Final CTA */}
-        <section className="final-cta">
-          <h2>Ready to Transform Your Job Search?</h2>
-          <p>
-            Join thousands of job seekers who've accelerated their career journey
-            with ReachScale
-          </p>
-          <div className="cta-buttons">
-            <a href="#" className="btn btn-primary">
+        <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 py-24 px-8 text-center text-white relative overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-[300px] h-[300px] bg-[radial-gradient(circle,rgba(99,102,241,0.4),transparent_70%)] animate-pulse"></div>
+
+          <div className="max-w-4xl mx-auto relative z-10">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6">
+              Ready to Transform Your Email Outreach?
+            </h2>
+            <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+              Join thousands of professionals using Mailer to accelerate their job search and business growth
+            </p>
+
+            <a
+              href="#"
+              className="inline-block px-12 py-4 rounded-full bg-white text-blue-600 font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:bg-gray-50 transition-all duration-300"
+            >
               Get Started Free
             </a>
           </div>
         </section>
 
         {/* Footer */}
-        <footer>
-          <p>&copy; 2026 ReachScale. All rights reserved.</p>
-          <div className="footer-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact Us</a>
-            <a href="#">Documentation</a>
+        <footer className="bg-gray-900 text-white py-12 px-8 text-center">
+          <p className="opacity-80 mb-4">
+            &copy; 2026 Mailer. All rights reserved.
+          </p>
+          <div className="flex flex-wrap justify-center gap-8 mt-6">
+            <a href="#" className="opacity-80 hover:opacity-100 hover:text-blue-400 transition-all">
+              Privacy Policy
+            </a>
+            <a href="#" className="opacity-80 hover:opacity-100 hover:text-blue-400 transition-all">
+              Terms of Service
+            </a>
+            <a href="#" className="opacity-80 hover:opacity-100 hover:text-blue-400 transition-all">
+              Contact Us
+            </a>
+            <a href="#" className="opacity-80 hover:opacity-100 hover:text-blue-400 transition-all">
+              Documentation
+            </a>
           </div>
         </footer>
       </div>
