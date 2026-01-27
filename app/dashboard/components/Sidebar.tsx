@@ -1,6 +1,16 @@
+"use client";
+
 import Link from "next/link";
 
 export default function Sidebar() {
+  const handleLogout = () => {
+    // Add your logout logic here
+    console.log("Logging out...");
+    // Example: Clear tokens, redirect to login, etc.
+    // localStorage.removeItem('token');
+    // window.location.href = '/login';
+  };
+
   return (
     <aside className="w-64 bg-blue-600 text-white hidden md:flex flex-col">
       <div className="p-6 text-xl font-bold border-b border-blue-500 flex items-center gap-2">
@@ -13,7 +23,7 @@ export default function Sidebar() {
         Mailer
       </div>
 
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 p-4 space-y-2 flex flex-col">
         <Link 
           href="/dashboard" 
           className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -53,6 +63,30 @@ export default function Sidebar() {
           </svg>
           Email Generator
         </Link>
+
+        <Link 
+          href="/dashboard/profile" 
+          className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          Profile
+        </Link>
+
+        {/* Spacer to push logout to bottom */}
+        <div className="flex-1" />
+
+        {/* Logout Button at Bottom */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-red-600 transition-colors border-t border-blue-500 mt-2 pt-4"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Logout
+        </button>
       </nav>
     </aside>
   );
