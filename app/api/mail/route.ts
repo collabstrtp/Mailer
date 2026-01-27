@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import User from "@/models/User";
 import { connectDB } from "@/lib/db";
 import { decryptPassword } from "@/lib/encryption";
+import Mail from "@/models/Mail";
+
 
 export async function POST(req: NextRequest) {
   console.log("Received request to /api/mail");
@@ -65,9 +67,11 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const result = await sendMailController(formData, {
+      userId: decoded.userId,              // ✅ ADD THIS
       userEmail: user.email,
       emailAppPassword: decryptedPassword,
     });
+
     console.log("Email sent successfully");
     return NextResponse.json({
       success: true,
@@ -79,6 +83,63 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { success: false, message: err.message || "Email sending failed" },
       { status: 500 },
+    );
+  }
+}
+
+
+export async function GET(req: NextRequest) {
+  console.log("Received GET request to /api/mail");
+
+  try {
+    // ---------- Auth ----------
+    const token =
+      req.cookies.get("token")?.value ||
+      req.headers.get("authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      return NextResponse.json(
+        { success: false, message: "Server configuration error" },
+        { status: 500 }
+      );
+    }
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(token, secret) as any;
+    } catch {
+      return NextResponse.json(
+        { success: false, message: "Invalid or expired token" },
+        { status: 401 }
+      );
+    }
+
+    // ---------- DB ----------
+    await connectDB();
+
+    const mails = await Mail.find({
+      user: decoded.userId,
+    })
+      .sort({ createdAt: -1 }) // latest first
+      .lean();
+
+    return NextResponse.json({
+      success: true,
+      data: mails,
+    });
+  } catch (err: any) {
+    console.error("Get mails error:", err.message);
+    return NextResponse.json(
+      { success: false, message: err.message },
+      { status: 500 }
     );
   }
 }

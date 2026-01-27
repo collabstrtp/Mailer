@@ -1,58 +1,74 @@
 import nodemailer from "nodemailer";
-import fs from "fs";
-import path from "path";
+import mongoose from "mongoose";
+import Mail from "@/models/Mail";
+import User from "@/models/User";
+import { uploadDocument } from "@/lib/uploadDocument";
 
 export async function sendMailController(
   formData: FormData,
-  userCredentials: { userEmail: string; emailAppPassword: string },
+  userCredentials: {
+    userId: string;
+    userEmail: string;
+    emailAppPassword: string;
+  }
 ) {
   const toRaw = formData.get("to") as string;
   const subject = formData.get("subject") as string;
-  const body = formData.get("body") as string;
+  const content = formData.get("body") as string;
 
-  if (!toRaw || !subject || !body) {
+  if (!toRaw || !subject || !content) {
     throw new Error("Missing required fields");
   }
 
-  if (!userCredentials.userEmail || !userCredentials.emailAppPassword) {
-    throw new Error("User credentials not available");
-  }
-
-  // split multiple emails
   const recipients = toRaw
     .split(",")
     .map((e) => e.trim())
-    .filter((e) => e.length > 0);
+    .filter(Boolean);
 
-  if (recipients.length === 0) {
+  if (!recipients.length) {
     throw new Error("No valid recipients");
   }
 
+  // ---------- Sender name ----------
+  const user = await User.findById(userCredentials.userId)
+    .select("name")
+    .lean();
+
+  const senderName =
+    user?.name ?? userCredentials.userEmail.split("@")[0];
+
+  // ---------- Upload files ONCE ----------
   const resume = formData.get("resume") as File | null;
   const coverLetter = formData.get("coverLetter") as File | null;
 
+  let resumeUrl: string | undefined;
+  let coverLetterUrl: string | undefined;
   const attachments: any[] = [];
 
-  async function saveFile(file: File) {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const filePath = path.join(process.cwd(), "tmp", file.name);
-    fs.writeFileSync(filePath, buffer);
-    return filePath;
-  }
-
   if (resume && resume.size > 0) {
-    const resumePath = await saveFile(resume);
-    attachments.push({ filename: resume.name, path: resumePath });
+    const buffer = Buffer.from(await resume.arrayBuffer());
+    const uploaded = await uploadDocument(
+      buffer,
+      "mails/resumes",
+      resume.name
+    );
+    resumeUrl = uploaded.url;
+    attachments.push({ filename: resume.name, path: resumeUrl });
   }
 
   if (coverLetter && coverLetter.size > 0) {
-    const coverPath = await saveFile(coverLetter);
-    attachments.push({ filename: coverLetter.name, path: coverPath });
+    const buffer = Buffer.from(await coverLetter.arrayBuffer());
+    const uploaded = await uploadDocument(
+      buffer,
+      "mails/cover-letters",
+      coverLetter.name
+    );
+    coverLetterUrl = uploaded.url;
+    attachments.push({ filename: coverLetter.name, path: coverLetterUrl });
   }
 
-  // Create transporter using user's email credentials
-  const userTransporter = nodemailer.createTransport({
+  // ---------- Transporter ----------
+  const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
     secure: false,
@@ -62,13 +78,119 @@ export async function sendMailController(
     },
   });
 
-  await userTransporter.sendMail({
-    from: `<${userCredentials.userEmail}>`,
-    to: recipients,
-    subject,
-    text: body,
-    attachments,
-  });
+  // ---------- RESULT TRACKING ----------
+  const summary = {
+    sent: 0,
+    failed: 0,
+    details: [] as {
+      email: string;
+      status: "sent" | "failed";
+      error?: string;
+    }[],
+  };
 
-  return { success: true, sentTo: recipients.length };
+  // ---------- SEND + SAVE ----------
+  for (const receiverEmail of recipients) {
+    try {
+      await transporter.sendMail({
+        from: `"${senderName}" <${userCredentials.userEmail}>`,
+        to: receiverEmail,
+        subject,
+        text: content,
+        attachments,
+      });
+
+      await Mail.create({
+        user: new mongoose.Types.ObjectId(userCredentials.userId),
+        senderEmail: userCredentials.userEmail,
+        receiverEmail,
+        resumeUrl,
+        coverLetterUrl,
+        subject,
+        content,
+        sentAt: new Date(),
+        status: "sent",
+      });
+
+      summary.sent++;
+      summary.details.push({
+        email: receiverEmail,
+        status: "sent",
+      });
+    } catch (err: any) {
+      await Mail.create({
+        user: new mongoose.Types.ObjectId(userCredentials.userId),
+        senderEmail: userCredentials.userEmail,
+        receiverEmail,
+        resumeUrl,
+        coverLetterUrl,
+        subject,
+        content,
+        sentAt: new Date(),
+        status: "failed",
+        errorMessage: err?.message || "Email send failed",
+      });
+
+      summary.failed++;
+      summary.details.push({
+        email: receiverEmail,
+        status: "failed",
+        error: err?.message || "Email send failed",
+      });
+    }
+  }
+
+  return {
+    success: true,
+    total: recipients.length,
+    sent: summary.sent,
+    failed: summary.failed,
+    details: summary.details,
+  };
+}
+
+export async function getAllMailsController({
+  userId,
+  status,
+  page = 1,
+  limit = 10,
+}: {
+  userId: string;
+  status?: "sent" | "failed";
+  page?: number;
+  limit?: number;
+}) {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  const query: any = {
+    user: new mongoose.Types.ObjectId(userId),
+  };
+
+  // optional filter
+  if (status) {
+    query.status = status;
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [mails, total] = await Promise.all([
+    Mail.find(query)
+      .sort({ createdAt: -1 }) // latest first
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+
+    Mail.countDocuments(query),
+  ]);
+
+  return {
+    success: true,
+    total,
+    page,
+    limit,
+    pages: Math.ceil(total / limit),
+    data: mails,
+  };
 }
