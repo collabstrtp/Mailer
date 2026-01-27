@@ -62,13 +62,13 @@ export default function MailHistoryPage() {
     );
 
     return (
-        <div className="bg-gray-900 min-h-screen p-6 text-white">
+        <div className="bg-gray-100 min-h-screen p-6 text-black">
             <h1 className="text-2xl font-bold mb-6">Mail History</h1>
 
             {/* TABLE */}
             <div className="overflow-x-auto rounded-lg border border-gray-700">
                 <table className="w-full text-sm">
-                    <thead className="bg-gray-800 text-gray-300">
+                    <thead className="bg-gray-300 text-black">
                         <tr>
                             <th className="p-3 text-left">To</th>
                             <th className="p-3 text-left">Subject</th>

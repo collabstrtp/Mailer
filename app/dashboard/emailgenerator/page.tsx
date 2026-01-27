@@ -46,7 +46,7 @@ export default function ColdMailPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6 flex justify-center">
+    <div className="min-h-screen bg-gray-100 text-black p-6 flex justify-center">
       <div className="w-full max-w-3xl space-y-6">
         <h1 className="text-2xl font-bold">Cold Email Generator</h1>
 
@@ -55,7 +55,7 @@ export default function ColdMailPage() {
           value={contextText}
           onChange={(e) => setContextText(e.target.value)}
           placeholder="Your info, skills, experience, notes..."
-          className="w-full min-h-[120px] p-3 rounded bg-gray-800 outline-none"
+          className="w-full min-h-[120px] p-3 rounded bg-gray-200 outline-none"
         />
 
         {/* RESUME */}

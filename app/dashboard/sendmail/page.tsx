@@ -77,14 +77,14 @@ export default function SendEmailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">
-      <div className="bg-gray-800 p-6 rounded-xl w-full max-w-md space-y-4 shadow-lg">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center text-black">
+      <div className="bg-gray-200 p-6 rounded-xl w-full max-w-md space-y-4 shadow-lg">
         <h1 className="text-xl font-bold text-center">Bulk Email Sender</h1>
 
         <input
           type="text"
           placeholder="Emails (comma separated)"
-          className="w-full p-2 rounded bg-gray-700 outline-none"
+          className="w-full p-2 rounded bg-gray-100 outline-none"
           value={to}
           onChange={(e) => setTo(e.target.value)}
         />
@@ -92,14 +92,14 @@ export default function SendEmailPage() {
         <input
           type="text"
           placeholder="Subject"
-          className="w-full p-2 rounded bg-gray-700 outline-none"
+          className="w-full p-2 rounded bg-gray-100 outline-none"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
         />
 
         <textarea
           placeholder="Email Body"
-          className="w-full p-2 rounded bg-gray-700 outline-none min-h-[120px]"
+          className="w-full p-2 rounded bg-gray-100 outline-none min-h-[120px]"
           value={body}
           onChange={(e) => setBody(e.target.value)}
         />

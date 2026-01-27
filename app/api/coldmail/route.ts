@@ -51,11 +51,9 @@ export async function POST(req: NextRequest) {
             extractedText += `\n\nResume:\n${await runOCR(resume)}`;
           }
         } catch {
-          // broken PDF → OCR
           extractedText += `\n\nResume:\n${await runOCR(resume)}`;
         }
       } else {
-        // image resume
         extractedText += `\n\nResume:\n${await runOCR(resume)}`;
       }
     }
@@ -72,7 +70,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ---------- GROQ ----------
+    // ---------- PROMPT ----------
     const prompt = `
 Write a short, professional cold email using the following information:
 
@@ -84,32 +82,77 @@ Guidelines:
 - Suitable for job application
 `;
 
-    const response = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.7,
-        }),
+    let email = "";
+
+    // ===============================
+    // 🔹 TRY GROQ FIRST
+    // ===============================
+    try {
+      const groqRes = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "llama-3.1-8b-instant",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+          }),
+        }
+      );
+
+      const groqData = await groqRes.json();
+
+      if (groqRes.ok) {
+        email =
+          groqData?.choices?.[0]?.message?.content ||
+          groqData?.choices?.[0]?.text ||
+          "";
+      } else {
+        console.warn("Groq failed, falling back to Gemini:", groqData);
       }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data?.error?.message || "Groq API failed");
+    } catch (err) {
+      console.warn("Groq error, falling back to Gemini:", err);
     }
 
-    const email =
-      data?.choices?.[0]?.message?.content ||
-      data?.choices?.[0]?.text ||
-      "";
+    // ===============================
+    // 🔹 FALLBACK TO GEMINI
+    // ===============================
+    if (!email) {
+      const geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [{ text: prompt }],
+              },
+            ],
+          }),
+        }
+      );
+
+      const geminiData = await geminiRes.json();
+
+      if (!geminiRes.ok) {
+        throw new Error(
+          geminiData?.error?.message || "Gemini API failed"
+        );
+      }
+
+      email =
+        geminiData?.candidates?.[0]?.content?.parts
+          ?.map((p: any) => p.text)
+          .join("") || "";
+    }
 
     return NextResponse.json({ success: true, email });
   } catch (err: any) {

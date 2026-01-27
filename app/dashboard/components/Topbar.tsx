@@ -1,14 +1,128 @@
-export default function Topbar() {
-  return (
-    <header className="h-16 bg-white border-b flex items-center justify-between px-6">
-      <h1 className="text-lg font-semibold">Dashboard</h1>
+"use client";
 
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-gray-600">
-          Govinda Mahanti
-        </span>
-        <div className="w-8 h-8 rounded-full bg-gray-300" />
-      </div>
-    </header>
+import { useState } from "react";
+import Link from "next/link";
+
+export default function Topbar() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  return (
+    <>
+      <header className="h-16 bg-blue-600 text-white border-b border-blue-500 flex items-center justify-between px-4 md:px-6">
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden p-2 hover:bg-blue-700 rounded-lg transition-colors"
+          aria-label="Toggle menu"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        {/* Logo for mobile */}
+        <div className="md:hidden flex items-center gap-2">
+          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+            <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+          </div>
+          <span className="font-bold">Mailer</span>
+        </div>
+
+        <h1 className="hidden md:block text-lg font-semibold">Dashboard</h1>
+
+        <div className="flex items-center gap-3">
+          <span className="hidden sm:block text-sm">
+            Govinda Mahanti
+          </span>
+          <div className="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center font-semibold text-sm">
+            GM
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Sidebar Menu */}
+      {isMobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          {/* Slide-out Menu */}
+          <div className="fixed top-0 left-0 h-full w-64 bg-blue-600 text-white z-50 md:hidden shadow-xl">
+            <div className="p-6 text-xl font-bold border-b border-blue-500 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                  </svg>
+                </div>
+                Mailer
+              </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-1 hover:bg-blue-700 rounded"
+                aria-label="Close menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <nav className="flex-1 p-4 space-y-2">
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+              </Link>
+
+              <Link
+                href="/dashboard/sendmail"
+                className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                Send Mail
+              </Link>
+
+              <Link
+                href="/dashboard/history"
+                className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Mail History
+              </Link>
+
+              <Link
+                href="/dashboard/emailgenerator"
+                className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                Email Generator
+              </Link>
+            </nav>
+          </div>
+        </>
+      )}
+    </>
   );
 }
