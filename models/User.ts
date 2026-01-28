@@ -6,11 +6,20 @@ export interface IUser {
   password: string;
   emailAppPassword: string;
   isVerified?: boolean;
+
   resume: {
     url: string;
     fileName?: string;
   };
-  coverLetter?: string;
+
+  coverLetter?: {
+    url: string;
+    fileName?: string;
+  };
+
+  portfolioUrl?: string;
+  githubUrl?: string;
+  linkedinUrl?: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -39,13 +48,15 @@ const UserSchema = new Schema<IUser>(
       required: true,
       select: false,
     },
+
     isVerified: {
       type: Boolean,
       default: false,
     },
+
     resume: {
       url: {
-        type: String, // cloudinary
+        type: String,
       },
       fileName: {
         type: String,
@@ -53,6 +64,25 @@ const UserSchema = new Schema<IUser>(
     },
 
     coverLetter: {
+      url: {
+        type: String,
+      },
+      fileName: {
+        type: String,
+      },
+    },
+
+    portfolioUrl: {
+      type: String,
+      trim: true,
+    },
+
+    githubUrl: {
+      type: String,
+      trim: true,
+    },
+
+    linkedinUrl: {
       type: String,
       trim: true,
     },
@@ -63,5 +93,4 @@ const UserSchema = new Schema<IUser>(
 );
 
 const User = models.User || model<IUser>("User", UserSchema);
-
 export default User;

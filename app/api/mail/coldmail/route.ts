@@ -72,17 +72,36 @@ export async function POST(req: NextRequest) {
 
     // ---------- PROMPT ----------
     const prompt = `
-Write a short, professional cold email using the following information:
+You are writing a cold job application email.
 
+Using the information below, generate:
+
+1. A concise, professional EMAIL SUBJECT (max 10 words)
+2. A short, professional EMAIL BODY
+
+Return output strictly in this format:
+
+SUBJECT:
+<subject here>
+
+BODY:
+<body here>
+
+Information:
 ${extractedText}
 
 Guidelines:
 - Professional tone
 - Concise
-- Suitable for job application
+- Job application focused
+- No emojis
 `;
 
+
     let email = "";
+    let subject = "";
+    let body = "";
+
 
     // ===============================
     // 🔹 TRY GROQ FIRST
@@ -148,13 +167,38 @@ Guidelines:
         );
       }
 
+
+
       email =
         geminiData?.candidates?.[0]?.content?.parts
           ?.map((p: any) => p.text)
           .join("") || "";
-    }
 
-    return NextResponse.json({ success: true, email });
+        }
+
+
+      // ---------- PARSE SUBJECT & BODY ----------
+      body = email;
+
+      const subjectMatch = email.match(/SUBJECT:\s*(.+)/i);
+      const bodyMatch = email.match(/BODY:\s*([\s\S]*)/i);
+
+      if (subjectMatch) subject = subjectMatch[1].trim();
+      if (bodyMatch) body = bodyMatch[1].trim();
+
+      // fallback subject (safety)
+      if (!subject) {
+        subject = "Job Application";
+      }
+
+
+
+    return NextResponse.json({
+      success: true,
+      subject,
+      email: body,
+    });
+
   } catch (err: any) {
     console.error("Coldmail error:", err);
     return NextResponse.json(

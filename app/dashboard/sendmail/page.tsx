@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { getToken } from "@/utils/auth";
+import { useEffect } from "react";
+
 
 export default function SendEmailPage() {
   const [to, setTo] = useState("");
@@ -11,6 +13,21 @@ export default function SendEmailPage() {
   const [coverLetter, setCoverLetter] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+  const savedData = localStorage.getItem("generatedColdMailData");
+
+  if (savedData) {
+    const { subject, body } = JSON.parse(savedData);
+
+    if (subject) setSubject(subject);
+    if (body) setBody(body);
+
+    localStorage.removeItem("generatedColdMailData");
+  }
+}, []);
+
+
 
 
 
@@ -46,7 +63,7 @@ export default function SendEmailPage() {
 
       console.log("Sending request with headers:", { Authorization: headers.Authorization ? "present" : "missing" });
 
-      const res = await fetch("/api/mail", {
+      const res = await fetch("/api/mail/sentMail", {
         method: "POST",
         body: formData,
         headers,

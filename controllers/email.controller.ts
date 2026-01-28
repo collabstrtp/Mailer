@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import Mail from "@/models/Mail";
 import User from "@/models/User";
 import { uploadDocument } from "@/lib/uploadDocument";
+import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/db";
 
 export async function sendMailController(
   formData: FormData,
@@ -149,48 +151,23 @@ export async function sendMailController(
   };
 }
 
-export async function getAllMailsController({
-  userId,
-  status,
-  page = 1,
-  limit = 10,
-}: {
-  userId: string;
-  status?: "sent" | "failed";
-  page?: number;
-  limit?: number;
-}) {
-  if (!userId) {
-    throw new Error("User ID is required");
+export const getAllMailsController = async (userId: string) => {
+  try {
+    await connectDB();
+
+    const mails = await Mail.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return NextResponse.json({
+      success: true,
+      data: mails,
+    });
+  } catch (error: any) {
+    console.error("Get mails controller error:", error.message);
+    return NextResponse.json(
+      { success: false, message: "Failed to fetch mails" },
+      { status: 500 }
+    );
   }
-
-  const query: any = {
-    user: new mongoose.Types.ObjectId(userId),
-  };
-
-  // optional filter
-  if (status) {
-    query.status = status;
-  }
-
-  const skip = (page - 1) * limit;
-
-  const [mails, total] = await Promise.all([
-    Mail.find(query)
-      .sort({ createdAt: -1 }) // latest first
-      .skip(skip)
-      .limit(limit)
-      .lean(),
-
-    Mail.countDocuments(query),
-  ]);
-
-  return {
-    success: true,
-    total,
-    page,
-    limit,
-    pages: Math.ceil(total / limit),
-    data: mails,
-  };
 }

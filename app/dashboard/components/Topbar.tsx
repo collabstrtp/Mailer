@@ -2,9 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useMe } from "@/hooks/useMe";
 
 export default function Topbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { data } = useMe();
+
+  const name = data?.user?.name || "User";
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <>
@@ -33,12 +43,13 @@ export default function Topbar() {
 
         <h1 className="hidden md:block text-lg font-semibold">Dashboard</h1>
 
-        <Link href="/dashboard/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <span className="hidden sm:block text-sm">
-            Govinda Mahanti
-          </span>
-          <div className="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center font-semibold text-sm cursor-pointer hover:ring-2 hover:ring-blue-300 transition-all">
-            GM
+         <Link
+          href="/dashboard/profile"
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+        >
+          <span className="hidden sm:block text-sm">{name}</span>
+          <div className="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center font-semibold text-sm">
+            {initials}
           </div>
         </Link>
       </header>

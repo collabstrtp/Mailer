@@ -26,7 +26,7 @@ export default function MailHistoryPage() {
             try {
                 const token = getToken();
 
-                const res = await fetch("/api/mail", {
+                const res = await fetch("/api/mail/getMail", {
                     headers: {
                         Authorization: token ? `Bearer ${token}` : "",
                     },
