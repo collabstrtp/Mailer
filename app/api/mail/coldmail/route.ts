@@ -10,8 +10,7 @@ export async function POST(req: NextRequest) {
 
     let extractedText = context.trim();
 
-    // Safe pdf-parse import (no test files issue)
-    // const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
+
 
     // ---------- OCR.space helper ----------
     const runOCR = async (file: File) => {
@@ -40,12 +39,12 @@ export async function POST(req: NextRequest) {
 
     // ---------- RESUME ----------
     if (resume) {
-  try {
-    extractedText += `\n\nResume:\n${await runOCR(resume)}`;
-  } catch (err) {
-    console.error("OCR failed for resume:", err);
-  }
-}
+      try {
+        extractedText += `\n\nResume:\n${await runOCR(resume)}`;
+      } catch (err) {
+        console.error("OCR failed for resume:", err);
+      }
+    }
 
 
     // ---------- JOB DESCRIPTION ----------
@@ -164,22 +163,22 @@ Guidelines:
           ?.map((p: any) => p.text)
           .join("") || "";
 
-        }
+    }
 
 
-      // ---------- PARSE SUBJECT & BODY ----------
-      body = email;
+    // ---------- PARSE SUBJECT & BODY ----------
+    body = email;
 
-      const subjectMatch = email.match(/SUBJECT:\s*(.+)/i);
-      const bodyMatch = email.match(/BODY:\s*([\s\S]*)/i);
+    const subjectMatch = email.match(/SUBJECT:\s*(.+)/i);
+    const bodyMatch = email.match(/BODY:\s*([\s\S]*)/i);
 
-      if (subjectMatch) subject = subjectMatch[1].trim();
-      if (bodyMatch) body = bodyMatch[1].trim();
+    if (subjectMatch) subject = subjectMatch[1].trim();
+    if (bodyMatch) body = bodyMatch[1].trim();
 
-      // fallback subject (safety)
-      if (!subject) {
-        subject = "Job Application";
-      }
+    // fallback subject (safety)
+    if (!subject) {
+      subject = "Job Application";
+    }
 
 
 

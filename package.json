@@ -19,12 +19,9 @@
     "next": "16.1.1",
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.12",
-    "pdf-parse": "^1.1.1",
-    "pdfjs-dist": "^5.4.530",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "sonner": "^2.0.7",
-    "tesseract-wasm": "^0.11.0"
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
