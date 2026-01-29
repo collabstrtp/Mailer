@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     let extractedText = context.trim();
 
     // Safe pdf-parse import (no test files issue)
-    const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
+    // const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
 
     // ---------- OCR.space helper ----------
     const runOCR = async (file: File) => {
@@ -40,23 +40,13 @@ export async function POST(req: NextRequest) {
 
     // ---------- RESUME ----------
     if (resume) {
-      if (resume.type === "application/pdf") {
-        try {
-          const buffer = Buffer.from(await resume.arrayBuffer());
-          const data = await pdfParse(buffer);
+  try {
+    extractedText += `\n\nResume:\n${await runOCR(resume)}`;
+  } catch (err) {
+    console.error("OCR failed for resume:", err);
+  }
+}
 
-          if (data.text && data.text.trim().length > 50) {
-            extractedText += `\n\nResume:\n${data.text}`;
-          } else {
-            extractedText += `\n\nResume:\n${await runOCR(resume)}`;
-          }
-        } catch {
-          extractedText += `\n\nResume:\n${await runOCR(resume)}`;
-        }
-      } else {
-        extractedText += `\n\nResume:\n${await runOCR(resume)}`;
-      }
-    }
 
     // ---------- JOB DESCRIPTION ----------
     if (jd) {
