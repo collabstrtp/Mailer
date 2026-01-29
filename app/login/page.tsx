@@ -1,47 +1,48 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import api from "@/utils/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setToken } from "@/utils/auth";
 import { toast } from "sonner";
 import Link from "next/link";
 
-export default function LoginPage() {
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
+function LoginContent() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const verified = searchParams.get("verified");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const verified = searchParams.get("verified");
 
-    useEffect(() => {
-        if (verified) {
-            toast.success("Email verified successfully. Please login.");
-        }
-    }, [verified]);
+  useEffect(() => {
+    if (verified) {
+      toast.success("Email verified successfully. Please login.");
+    }
+  }, [verified]);
 
-    const { email, password } = formData;
+  const { email, password } = formData;
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await api.post("/login", formData);
-            setToken(response.data.token);
-            toast.success(response.data.message);
-            router.push("/dashboard");
-        } catch (error: any) {
-            toast.error(error?.response?.data?.message || "Login failed");
-        }
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await api.post("/login", formData);
+      setToken(response.data.token);
+      toast.success(response.data.message);
+      router.push("/dashboard");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Login failed");
+    }
+  };
 
-    return (
+  return (
+  
         <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100">
             {/* Background decorative elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -165,4 +166,13 @@ export default function LoginPage() {
             </div>
         </div>
     );
+  
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
+  );
 }
