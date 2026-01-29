@@ -179,3 +179,112 @@ export const verifyEmail = async (token: string) => {
     );
   }
 };
+
+export const forgotPassword = async (req: NextRequest) => {
+  try {
+    await connectDB();
+    const body = await req.json();
+    const { email } = body;
+    if (!email) {
+      return NextResponse.json(
+        { message: "Email is required", success: false },
+        { status: 400 },
+      );
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return NextResponse.json(
+        {
+          message:
+            "If an account with that email exists, a reset link has been sent.",
+          success: true,
+        },
+        { status: 200 },
+      );
+    }
+
+    const JWT_SECRET = process.env.JWT_SECRET as string;
+    if (!JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+
+    const resetToken = jwt.sign({ email }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    const resetUrl = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
+    const emailHtml = `
+      <h1>Reset Your Password</h1>
+      <p>Hi ${user.name},</p>
+      <p>Please click the link below to reset your password:</p>
+      <a href="${resetUrl}" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+      <p>This link will expire in 1 hour.</p>
+      <p>If you didn't request this, please ignore this email.</p>
+    `;
+
+    // Send reset email
+    await sendEmail(email, "Password Reset", emailHtml);
+
+    return NextResponse.json(
+      {
+        message:
+          "If an account with that email exists, a reset link has been sent.",
+        success: true,
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return NextResponse.json(
+      {
+        message: "Error sending reset email",
+        success: false,
+      },
+      { status: 500 },
+    );
+  }
+};
+
+export const resetPassword = async (token: string, password: string) => {
+  try {
+    await connectDB();
+
+    if (!token || !password) {
+      return NextResponse.json(
+        { message: "Token and password are required", success: false },
+        { status: 400 },
+      );
+    }
+
+    const JWT_SECRET = process.env.JWT_SECRET as string;
+    if (!JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET) as { email: string };
+
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return NextResponse.json(
+        { message: "Invalid token", success: false },
+        { status: 400 },
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return NextResponse.json(
+      { message: "Password reset successfully", success: true },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return NextResponse.json(
+      { message: "Invalid or expired token", success: false },
+      { status: 400 },
+    );
+  }
+};

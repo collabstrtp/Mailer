@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMe } from "@/hooks/useMe";
+import { removeToken } from "@/utils/auth";
+import { toast } from "react-toastify";
 
 export default function Topbar() {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data } = useMe();
+  const router = useRouter();
 
   const name = data?.user?.name || "User";
   const initials = name
@@ -15,6 +19,12 @@ export default function Topbar() {
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
+  const handleLogout = () => {
+    removeToken();
+    toast.success("Logged out successfully");
+    router.push("/login");
+  };
 
   return (
     <>
@@ -43,15 +53,26 @@ export default function Topbar() {
 
         <h1 className="hidden md:block text-lg font-semibold">Dashboard</h1>
 
-         <Link
-          href="/dashboard/profile"
-          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-        >
-          <span className="hidden sm:block text-sm">{name}</span>
-          <div className="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center font-semibold text-sm">
-            {initials}
-          </div>
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/dashboard/profile"
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
+            <span className="hidden sm:block text-sm">{name}</span>
+            <div className="w-8 h-8 rounded-full bg-white text-blue-600 flex items-center justify-center font-semibold text-sm">
+              {initials}
+            </div>
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="text-white hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors"
+            aria-label="Logout"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
+        </div>
       </header>
 
       {/* Mobile Sidebar Menu */}
@@ -142,6 +163,20 @@ export default function Topbar() {
                 </svg>
                 Profile
               </Link>
+
+              {/* Logout Button in Mobile Menu */}
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors w-full text-left"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </button>
             </nav>
           </div>
         </>
