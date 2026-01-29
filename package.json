@@ -23,7 +23,7 @@
     "pdfjs-dist": "^5.4.530",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-toastify": "^11.0.5",
+    "sonner": "^2.0.7",
     "tesseract-wasm": "^0.11.0"
   },
   "devDependencies": {

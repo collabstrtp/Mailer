@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import api from "@/utils/api";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Link from "next/link";
 
 export default function ForgotPasswordPage() {

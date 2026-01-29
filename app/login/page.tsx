@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import api from "@/utils/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setToken } from "@/utils/auth";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import Link from "next/link";
 
 export default function LoginPage() {

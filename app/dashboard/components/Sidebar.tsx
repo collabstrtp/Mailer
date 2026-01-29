@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { removeToken } from "@/utils/auth";
+import { toast } from "sonner";
 
 export default function Sidebar() {
+  const router = useRouter();
+
   const handleLogout = () => {
-    // Add your logout logic here
-    console.log("Logging out...");
-    // Example: Clear tokens, redirect to login, etc.
-    // localStorage.removeItem('token');
-    // window.location.href = '/login';
+    removeToken();
+    toast.success("Logged out successfully");
+    router.push("/login");
   };
 
   return (
@@ -24,8 +27,8 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-2 flex flex-col">
-        <Link 
-          href="/dashboard" 
+        <Link
+          href="/dashboard"
           className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,8 +37,8 @@ export default function Sidebar() {
           Dashboard
         </Link>
 
-        <Link 
-          href="/dashboard/sendmail" 
+        <Link
+          href="/dashboard/sendmail"
           className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,8 +47,8 @@ export default function Sidebar() {
           Send Mail
         </Link>
 
-        <Link 
-          href="/dashboard/history" 
+        <Link
+          href="/dashboard/history"
           className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,8 +57,8 @@ export default function Sidebar() {
           Mail History
         </Link>
 
-        <Link 
-          href="/dashboard/emailgenerator" 
+        <Link
+          href="/dashboard/emailgenerator"
           className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,8 +67,8 @@ export default function Sidebar() {
           Email Generator
         </Link>
 
-        <Link 
-          href="/dashboard/profile" 
+        <Link
+          href="/dashboard/profile"
           className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
