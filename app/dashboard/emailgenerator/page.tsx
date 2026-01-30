@@ -75,89 +75,133 @@ export default function ColdMailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black p-6 flex justify-center">
-      <div className="w-full max-w-3xl space-y-6">
-        <h1 className="text-2xl font-bold">Cold Email Generator</h1>
+    <div className="min-h-screen bg-gray-50 px-4 sm:px-6 py-6 text-gray-900">
+      <div className="max-w-5xl mx-auto space-y-6">
 
-        {/* CONTEXT */}
-        <textarea
-          value={contextText}
-          onChange={(e) => setContextText(e.target.value)}
-          placeholder="Your skills, experience, notes, company info..."
-          className="w-full min-h-[120px] p-3 rounded border outline-none"
-        />
+        {/* Header */}
+        <h1 className="text-xl sm:text-2xl font-bold">
+          Cold Email Generator
+        </h1>
 
-        {/* RESUME */}
-        <div>
-          <label className="block text-sm mb-1">Upload Resume</label>
-          <input
-            type="file"
-            accept=".pdf,image/*"
-            onChange={(e) => setResume(e.target.files?.[0] || null)}
-          />
-        </div>
-
-        {/* JOB DESCRIPTION */}
-        <div>
-          <label className="block text-sm mb-1">
-            Upload Job Description (optional)
+        {/* Context */}
+        <div className="bg-white rounded-xl p-4 sm:p-6 shadow border border-gray-200 space-y-2">
+          <label className="text-sm font-semibold text-gray-700">
+            Context
           </label>
-          <input
-            type="file"
-            accept=".pdf,image/*"
-            onChange={(e) => setJd(e.target.files?.[0] || null)}
+          <textarea
+            value={contextText}
+            onChange={(e) => setContextText(e.target.value)}
+            placeholder="Your skills, experience, company info..."
+            className="w-full min-h-[140px] sm:min-h-[180px]
+              border border-gray-300 rounded-lg p-3
+              text-gray-900 placeholder:text-gray-400
+              outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        {/* GENERATE BUTTON */}
+        {/* Uploads */}
+        <div className="bg-white rounded-xl p-4 sm:p-6 shadow border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Resume
+            </label>
+            <input
+              type="file"
+              accept=".pdf,image/*"
+              className="text-sm text-gray-700"
+              onChange={(e) => setResume(e.target.files?.[0] || null)}
+            />
+            {resume && (
+              <p className="text-xs text-gray-500 mt-1">
+                {resume.name}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Job Description (optional)
+            </label>
+            <input
+              type="file"
+              accept=".pdf,image/*"
+              className="text-sm text-gray-700"
+              onChange={(e) => setJd(e.target.files?.[0] || null)}
+            />
+            {jd && (
+              <p className="text-xs text-gray-500 mt-1">
+                {jd.name}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Generate Button */}
         <button
           onClick={generateColdMail}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold disabled:opacity-60"
+          className="
+            w-full sm:w-auto
+            px-6 py-3 rounded-xl
+            bg-gradient-to-r from-blue-600 to-indigo-600
+            text-white font-semibold
+            hover:opacity-90 transition
+            disabled:opacity-60
+          "
         >
           {loading ? "Generating..." : "Generate Cold Email"}
         </button>
 
-        {/* ERROR */}
-        {error && <p className="text-red-600">{error}</p>}
+        {error && (
+          <p className="text-red-600 text-sm">{error}</p>
+        )}
 
-        {/* RESULT */}
+        {/* Result */}
         {generatedMail && (
-          <div className="space-y-3">
-            {/* SUBJECT PREVIEW */}
+          <div className="bg-white rounded-xl p-4 sm:p-6 shadow border border-gray-200 space-y-4">
+
             {generatedSubject && (
               <input
                 value={generatedSubject}
                 readOnly
-                className="w-full p-3 rounded border bg-gray-50 font-medium"
+                className="
+                  w-full p-3 rounded-lg
+                  border border-gray-300
+                  bg-gray-50 font-medium
+                "
               />
             )}
 
-            {/* EMAIL BODY */}
             <textarea
               value={generatedMail}
               readOnly
-              className="w-full min-h-[220px] p-3 rounded border outline-none"
+              className="
+                w-full min-h-[200px] sm:min-h-[260px]
+                p-3 rounded-lg
+                border border-gray-300
+                bg-white
+                outline-none resize-none
+              "
             />
 
-            {/* ACTION BUTTONS */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={copyToClipboard}
-                className="px-4 py-2 border rounded hover:bg-gray-100"
+                className="px-4 py-2 rounded-lg border hover:bg-gray-100"
               >
                 Copy
               </button>
 
               <button
                 onClick={goToSendPage}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
               >
                 Send
               </button>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

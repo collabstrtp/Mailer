@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useMe } from "@/hooks/useMe";
-
+import Image from "next/image";
+import logoo from "@/public/logoo.png";
 export default function Topbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data } = useMe();
@@ -20,30 +21,23 @@ export default function Topbar() {
     <>
       <header className="h-16 bg-blue-600 text-white border-b border-blue-500 flex items-center justify-between px-4 md:px-6">
         {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden p-2 hover:bg-blue-700 rounded-lg transition-colors"
-          aria-label="Toggle menu"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        
 
         {/* Logo for mobile */}
         <div className="md:hidden flex items-center gap-2">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-            </svg>
-          </div>
-          <span className="font-bold">Mailer</span>
+         <Image
+          src={logoo}
+          alt="Mailer Logo"
+          width={140}
+          height={140}
+          priority
+
+        />
         </div>
 
         <h1 className="hidden md:block text-lg font-semibold">Dashboard</h1>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 hidden md:block">
           <Link
             href="/dashboard/profile"
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
@@ -54,6 +48,16 @@ export default function Topbar() {
             </div>
           </Link>
         </div>
+
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden p-2 hover:bg-blue-700 rounded-lg transition-colors"
+          aria-label="Toggle menu"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
       </header>
 
       {/* Mobile Sidebar Menu */}

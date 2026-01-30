@@ -5,6 +5,9 @@ import api from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
+import logo from "@/public/logo.png";
+
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -55,11 +58,14 @@ export default function RegisterPage() {
                     <h2 className="text-2xl flex justify-center font-bold text-gray-900 mb-2">
                         Create Your Account
                     </h2><div className="text-center flex justify-center  gap-4 mb-2">
-                        <svg className="w-8 h-8 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
+                        <Image
+  src={logo}
+  alt="Mailer Logo"
+  width={140}
+  height={140}
+  priority
+/>
 
-                        <h1 className="text-3xl font-bold text-gray-900">Mailer</h1>
                     </div>
 
                     <p className="flex justify-center text-gray-600 mb-6 text-sm">
@@ -158,40 +164,25 @@ export default function RegisterPage() {
                         </button>
 
                         {/* Divider */}
-                        <div className="relative my-6">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-200"></div>
-                            </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-4 bg-white text-gray-500">
-                                    Already have an account?
-                                </span>
-                            </div>
-                        </div>
+<div className="relative my-6">
+  <div className="absolute inset-0 flex items-center">
+    <div className="w-full border-t border-gray-200"></div>
+  </div>
 
-                        {/* Login Link */}
-                        <Link
-                            href="/login"
-                            className="block w-full py-3.5 rounded-xl border-2 border-blue-600 
-                            text-blue-600 font-semibold text-center
-                            hover:bg-blue-50 transition-all duration-200"
-                        >
-                            Sign In
-                        </Link>
+  <div className="relative flex justify-center text-sm bg-white px-4 text-gray-500">
+    Already have an account?
+    <Link
+      href="/login"
+      className="ml-1 font-semibold text-blue-600 hover:underline"
+    >
+      Sign In
+    </Link>
+  </div>
+</div>
+
                     </form>
                 </div>
 
-                {/* Footer Text */}
-                <p className="text-center text-sm text-gray-600 mt-6">
-                    By creating an account, you agree to our{" "}
-                    <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Privacy Policy
-                    </Link>
-                </p>
             </div>
         </div>
     );

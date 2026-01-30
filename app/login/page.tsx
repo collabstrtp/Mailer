@@ -6,6 +6,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { setToken } from "@/utils/auth";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
+import logo from "@/public/logo.png";
+
 
 function LoginContent() {
   const [formData, setFormData] = useState({
@@ -57,12 +60,17 @@ function LoginContent() {
                     <h2 className="text-2xl flex justify-center font-bold text-gray-900 mb-2">
                         Welcome Back To
                     </h2>
-                    <div className="text-center flex justify-center gap-4 mb-2">
-                        <svg className="w-8 h-8 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        <h1 className="text-3xl font-bold text-gray-900">Mailer</h1>
+                 <div className="text-center flex justify-center  gap-4 mb-2">
+                        <Image
+  src={logo}
+  alt="Mailer Logo"
+  width={140}
+  height={140}
+  priority
+/>
+
                     </div>
+
 
                     <p className="flex justify-center text-gray-600 mb-6 text-sm">
                         Sign in to your account to continue
@@ -128,41 +136,25 @@ function LoginContent() {
                             Sign In
                         </button>
 
-                        {/* Divider */}
-                        <div className="relative my-6">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-200"></div>
-                            </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-4 bg-white text-gray-500">
-                                    New to Mailer?
-                                </span>
-                            </div>
-                        </div>
+                       <div className="relative my-6">
+  <div className="absolute inset-0 flex items-center">
+    <div className="w-full border-t border-gray-200"></div>
+  </div>
 
-                        {/* Sign Up Link */}
-                        <Link
-                            href="/register"
-                            className="block w-full py-3.5 rounded-xl border-2 border-blue-600 
-                            text-blue-600 font-semibold text-center
-                            hover:bg-blue-50 transition-all duration-200"
-                        >
-                            Create Account
-                        </Link>
+  <div className="relative flex justify-center text-sm bg-white px-4 text-gray-500">
+    New to Mailer?
+    <Link
+      href="/register"
+      className="ml-1 font-semibold text-blue-600 hover:underline"
+    >
+      Create Account
+    </Link>
+  </div>
+</div>
+
                     </form>
                 </div>
 
-                {/* Footer Text */}
-                <p className="text-center text-sm text-gray-600 mt-6">
-                    By continuing, you agree to our{" "}
-                    <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Privacy Policy
-                    </Link>
-                </p>
             </div>
         </div>
     );

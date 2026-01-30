@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { removeToken } from "@/utils/auth";
 import { toast } from "sonner";
+import Image from "next/image";
+import logoo from "@/public/logoo.png";
+
 
 export default function Sidebar() {
   const router = useRouter();
@@ -17,13 +20,15 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-blue-600 text-white hidden md:flex flex-col">
       <div className="p-6 text-xl font-bold border-b border-blue-500 flex items-center gap-2">
-        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-          <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-          </svg>
-        </div>
-        Mailer
+
+        <Image
+          src={logoo}
+          alt="Mailer Logo"
+          width={140}
+          height={140}
+          priority
+
+        />
       </div>
 
       <nav className="flex-1 p-4 space-y-2 flex flex-col">

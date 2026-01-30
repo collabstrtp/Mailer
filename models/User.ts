@@ -7,6 +7,8 @@ export interface IUser {
   emailAppPassword: string;
   isVerified?: boolean;
 
+  phone?: string; 
+
   resume: {
     url: string;
     fileName?: string;
@@ -22,6 +24,7 @@ export interface IUser {
   linkedinUrl?: string;
 }
 
+
 const UserSchema = new Schema<IUser>(
   {
     name: {
@@ -35,6 +38,11 @@ const UserSchema = new Schema<IUser>(
       required: true,
       unique: true,
       lowercase: true,
+    },
+
+    phone: {
+      type: String,
+      trim: true,
     },
 
     password: {
@@ -91,6 +99,7 @@ const UserSchema = new Schema<IUser>(
     timestamps: true,
   }
 );
+
 
 const User = models.User || model<IUser>("User", UserSchema);
 export default User;

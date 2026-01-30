@@ -68,6 +68,7 @@ export const updateUserController = async (
     const formData = await req.formData();
 
     const name = formData.get("name") as string | null;
+    const phone = formData.get("phone") as string | null; // 👈 added
     const portfolioUrl = formData.get("portfolioUrl") as string | null;
     const githubUrl = formData.get("githubUrl") as string | null;
     const linkedinUrl = formData.get("linkedinUrl") as string | null;
@@ -78,6 +79,7 @@ export const updateUserController = async (
     const updateData: any = {};
 
     if (name) updateData.name = name;
+    if (phone) updateData.phone = phone; // 👈 added
     if (portfolioUrl) updateData.portfolioUrl = portfolioUrl;
     if (githubUrl) updateData.githubUrl = githubUrl;
     if (linkedinUrl) updateData.linkedinUrl = linkedinUrl;
@@ -138,3 +140,4 @@ export const updateUserController = async (
     );
   }
 };
+

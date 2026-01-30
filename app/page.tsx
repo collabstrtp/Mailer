@@ -3,7 +3,10 @@
 import { Mail, Send, FileText, Sparkles, Zap, Shield, Clock } from 'lucide-react';
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
+import logo from "@/public/logo.png";
+import { Menu, X } from 'lucide-react';
+import { useState } from 'react';
 export default function Home() {
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -24,6 +27,18 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleNavClick = (href: string) => {
+    setIsMenuOpen(false);
+    // Smooth scroll to section
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
@@ -66,42 +81,155 @@ export default function Home() {
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         {/* Navbar */}
-        <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <Mail className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Mailer
-                </span>
-              </div>
+      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <Image
+              src={logo}
+              alt="Mailer Logo"
+              width={120}
+              height={32}
+              className="sm:w-[150px] sm:h-[40px]"
+              priority
+            />
+          </div>
 
-              <div className="hidden md:flex items-center gap-8">
-                <a href="#features" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  Features
-                </a>
-                <a href="#how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  How It Works
-                </a>
-                <a href="#pricing" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  Pricing
-                </a>
-              </div>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
+            <a 
+              href="#features" 
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#features');
+              }}
+            >
+              Features
+            </a>
+            <a 
+              href="#how-it-works" 
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#how-it-works');
+              }}
+            >
+              How It Works
+            </a>
+            <a 
+              href="#faq" 
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#faq');
+              }}
+            >
+              FAQ
+            </a>
+          </div>
 
-              <div className="flex items-center gap-4">
-                <button onClick={() => router.push("/login")} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium">
-                  Login
-                </button>
-                <button
-                  onClick={() => router.push("/register")} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium">
-                  Sign Up
-                </button>
-              </div>
+          {/* Desktop Auth Buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            <button 
+              onClick={() => router.push("/login")} 
+              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+            >
+              Login
+            </button>
+            <button
+              onClick={() => router.push("/register")} 
+              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+            >
+              Sign Up
+            </button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMenu}
+            className="md:hidden p-2 text-gray-700 hover:text-blue-600 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            isMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="flex flex-col space-y-4 pb-4">
+            {/* Mobile Navigation Links */}
+            <a
+              href="#features"
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 border-b border-gray-100"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#features');
+              }}
+            >
+              Features
+            </a>
+            <a
+              href="#how-it-works"
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 border-b border-gray-100"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#how-it-works');
+              }}
+            >
+              How It Works
+            </a>
+            <a
+              href="#benefits"
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 border-b border-gray-100"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#benefits');
+              }}
+            >
+              Benefits
+            </a>
+            <a
+              href="#faq"
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 border-b border-gray-100"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('#faq');
+              }}
+            >
+              FAQ
+            </a>
+
+            {/* Mobile Auth Buttons */}
+            <div className="flex flex-col gap-3 pt-2">
+              <button
+                onClick={() => {
+                  router.push("/login");
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => {
+                  router.push("/register");
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all font-medium"
+              >
+                Sign Up
+              </button>
             </div>
           </div>
-        </nav>
+        </div>
+      </div>
+    </nav>
 
         {/* Hero Section */}
         <section className="pt-32 pb-20 px-6">
@@ -127,9 +255,6 @@ export default function Home() {
                     className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-xl transition-all font-semibold text-lg flex items-center justify-center gap-2">
                     Get Started Free
                     <Send className="w-5 h-5" />
-                  </button>
-                  <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-all font-semibold text-lg">
-                    Watch Demo
                   </button>
                 </div>
                 <div className="flex items-center gap-8 pt-4">
@@ -172,7 +297,7 @@ export default function Home() {
                           <span className="text-sm text-gray-700">Resume.pdf, Cover_Letter.pdf</span>
                         </div>
                       </div>
-                      <button className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2">
+                      <button  onClick={() => router.push("/register")} className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2">
                         <Send className="w-5 h-5" />
                         Send to All Recipients
                       </button>
@@ -186,35 +311,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Bar */}
-        <section className="bg-white py-12 px-8 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-          <div className="max-w-6xl mx-auto flex flex-wrap justify-center gap-16 text-center">
-            <div>
-              <div className="text-5xl md:text-6xl font-extrabold gradient-stat mb-2">
-                10K+
-              </div>
-              <div className="text-gray-600 text-base uppercase tracking-wider font-medium">
-                Emails Sent Daily
-              </div>
-            </div>
-            <div>
-              <div className="text-5xl md:text-6xl font-extrabold gradient-stat mb-2">
-                95%
-              </div>
-              <div className="text-gray-600 text-base uppercase tracking-wider font-medium">
-                Delivery Rate
-              </div>
-            </div>
-            <div>
-              <div className="text-5xl md:text-6xl font-extrabold gradient-stat mb-2">
-                3x
-              </div>
-              <div className="text-gray-600 text-base uppercase tracking-wider font-medium">
-                Faster Outreach
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Features Section */}
         <section id="features" className="py-24 px-8 max-w-7xl mx-auto">
@@ -336,6 +432,62 @@ export default function Home() {
           </div>
         </section>
 
+
+
+{/* FAQ Section */}
+<section id='faq' className="bg-gradient-to-br from-blue-50 to-indigo-50 py-24 px-8">
+  <div className="max-w-5xl mx-auto">
+    <h2 className="text-4xl md:text-5xl lg:text-6xl text-center font-extrabold mb-4 text-gray-900">
+      Frequently Asked Questions
+    </h2>
+    <p className="text-center text-gray-600 text-xl mb-16">
+      Everything you need to know before getting started
+    </p>
+
+    <div className="space-y-6">
+      {[
+        {
+          q: "Is Mailer free to use?",
+          a: "Yes, you can start for free with limited usage. Paid plans unlock higher limits and advanced features."
+        },
+        {
+          q: "Is my email account safe?",
+          a: "Absolutely. We use Gmail app passwords and encryption. Your main email password is never stored."
+        },
+        {
+          q: "Can I attach resumes and documents?",
+          a: "Yes. You can automatically attach resumes, cover letters, and other files to every email."
+        },
+        {
+          q: "Who is this tool best for?",
+          a: "Mailer is ideal for job seekers, recruiters, founders, marketers, and anyone doing cold outreach."
+        },
+        {
+          q: "Can I send emails in bulk?",
+          a: "Yes. Upload a list and send emails to hundreds or thousands of recipients with one click."
+        },
+        {
+          q: "Do I need technical knowledge?",
+          a: "Not at all. Mailer is built for non-technical users with a simple, intuitive interface."
+        }
+      ].map((faq, i) => (
+        <div
+          key={i}
+          className="observe bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all duration-300"
+        >
+          <h3 className="text-xl font-bold text-gray-900 mb-3">
+            {faq.q}
+          </h3>
+          <p className="text-gray-600 leading-relaxed">
+            {faq.a}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+
         {/* Final CTA */}
         <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-700 py-24 px-8 text-center text-white relative overflow-hidden">
           <div className="absolute -top-24 -right-24 w-[300px] h-[300px] bg-[radial-gradient(circle,rgba(99,102,241,0.4),transparent_70%)] animate-pulse"></div>
@@ -348,14 +500,15 @@ export default function Home() {
               Join thousands of professionals using Mailer to accelerate their job search and business growth
             </p>
 
-            <a
-              href="#"
+            <button
+               onClick={() => router.push("/register")}
               className="inline-block px-12 py-4 rounded-full bg-white text-blue-600 font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:bg-gray-50 transition-all duration-300"
             >
               Get Started Free
-            </a>
+            </button>
           </div>
         </section>
+        
 
         {/* Footer */}
         <footer className="bg-gray-900 text-white py-12 px-8 text-center">

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { authMiddleware } from "@/middleware/authMiddleware";
+
 
 export async function POST(req: NextRequest) {
   try {
