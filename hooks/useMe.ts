@@ -8,6 +8,7 @@ export interface UserProfile {
   name: string;
   email: string;
   isVerified?: boolean;
+  phone?: string;
 
   resume?: {
     url?: string;
